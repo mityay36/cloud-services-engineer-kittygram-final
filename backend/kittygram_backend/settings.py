@@ -2,14 +2,14 @@
 import os
 from pathlib import Path
 
+from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('DJANGO_SECRET', default='SECRET')
+SECRET_KEY = os.getenv('DJANGO_SECRET', default=get_random_secret_key())
 
 DEBUG = os.getenv('DEBUG_VALUE', default='False').lower() in ('true', '1', 't')
 
