@@ -3,16 +3,6 @@ on: push
 jobs:
   tests:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:13.10
-        env:
-          POSTGRES_USER: django_user
-          POSTGRES_PASSWORD: django_password
-          POSTGRES_DB: django_db
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -23,8 +13,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r ./backend/requirements/requirements.txt
-        pip install -r ./backend/requirements/requirements.line.txt
+        pip install flake8==6.0.0 flake8-isort==6.0.0
     - name: Test with flake8 and django tests
       env:
         POSTGRES_USER: django_user
@@ -33,17 +22,9 @@ jobs:
         DB_HOST: 127.0.0.1
         DB_PORT: 5432
       run: python -m flake8 backend/
-    - name: Text with django tests
-      env:
-        POSTGRES_USER: django_user
-        POSTGRES_PASSWORD: django_password
-        POSTGRES_DB: django_db
-        DB_HOST: 127.0.0.1
-        DB_PORT: 5432
-      run: pytest tests
 
   build_and_push_to_docker_hub:
-    name: Push Docker image to DockerHub
+    name: Push backend Docker image to DockerHub
     runs-on: ubuntu-latest
     needs: tests
     if: github.ref == 'refs/heads/main'
@@ -62,7 +43,7 @@ jobs:
       with:
         context: ./backend/
         push: true
-        tags: mityay36/kittygram_final_backend:latest
+        tags: ${{ secrets.DOCKER_USERNAME }}/kittygram_backend:latest
 
   frontend_tests:
     runs-on: ubuntu-latest
@@ -103,7 +84,7 @@ jobs:
         with:
           context: ./frontend/
           push: true
-          tags: mityay36/kittygram_final_frontend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/kittygram_frontend:latest
 
   build_gateway_and_push_to_docker_hub:
     name: Push gateway Docker image to DockerHub
@@ -124,7 +105,7 @@ jobs:
         with:
           context: ./nginx/
           push: true
-          tags: mityay36/kittygram_final_gateway:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/kittygram_gateway:latest
   deploy:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
@@ -163,9 +144,41 @@ jobs:
             sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
             sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/static/
             sudo docker system prune
-  send_message:
+  auto_tests:
     runs-on: ubuntu-latest
     needs: deploy
+    services:
+      postgres:
+        image: postgres:13.10
+        env:
+          POSTGRES_USER: django_user
+          POSTGRES_PASSWORD: django_password
+          POSTGRES_DB: django_db
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./backend/requirements.txt
+      - name: Text with django tests
+        env:
+          POSTGRES_USER: django_user
+          POSTGRES_PASSWORD: django_password
+          POSTGRES_DB: django_db
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+        run: pytest tests
+  send_message:
+    runs-on: ubuntu-latest
+    needs: auto_tests
     if: github.ref == 'refs/heads/main'
     steps:
     - name: Send message
@@ -173,4 +186,8 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: Деплой успешно выполнен! Красава.
+        message: |
+          Деплой успешно выполнен! Красава.
+          Автор: ${{ github.actor }}
+          Сообщение коммита: ${{ github.event.commits[0].message }}
+          Ссылка на коммит: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
