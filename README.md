@@ -93,4 +93,4 @@ Reload nginx
   
 
 ## Author
-[Dmitry Pokrovsky](https://github.com/mityay36)
+[Dmitry Pokrovsky](https://github.com/mityay36)🐝
