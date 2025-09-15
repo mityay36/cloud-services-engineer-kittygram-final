@@ -25,8 +25,6 @@ terraform {
 }
 
 provider "yandex" {
-  access_key  = var.access_key
-  secret_key  = var.secret_key
-  cloud_id    = var.cloud_id
-  folder_id   = var.folder_id
+  cloud_id  = var.cloud_id
+  folder_id = var.folder_id
 }
