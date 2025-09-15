@@ -29,41 +29,29 @@ jobs:
         with:
           terraform_version: 1.5.0
       
-      - name: Create service account key file
-        run: |
-          echo '${{ secrets.YC_SERVICE_ACCOUNT_KEY }}' > key.json
-      
       - name: Terraform Init
         run: terraform init
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
-          YC_SERVICE_ACCOUNT_KEY_FILE: key.json
       
       - name: Terraform Plan
         if: ${{ github.event.inputs.action == 'plan' }}
-        run: terraform plan -var="cloud_id=${{ secrets.CLOUD_ID }}" -var="folder_id=${{ secrets.FOLDER_ID }}" -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" -var="yandex_service_account_key=${{ secrets.YC_SERVICE_ACCOUNT_KEY }}"
+        run: terraform plan -var="access_key=${{ secrets.ACCESS_KEY }}" -var="secret_key=${{ secrets.SECRET_KEY }}" -var="cloud_id=${{ secrets.CLOUD_ID }}" -var="folder_id=${{ secrets.FOLDER_ID }}" -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
-          YC_SERVICE_ACCOUNT_KEY_FILE: key.json
       
       - name: Terraform Apply
         if: ${{ github.event.inputs.action == 'apply' }}
-        run: terraform apply -auto-approve -var="cloud_id=${{ secrets.CLOUD_ID }}" -var="folder_id=${{ secrets.FOLDER_ID }}" -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" -var="yandex_service_account_key=${{ secrets.YC_SERVICE_ACCOUNT_KEY }}"
+        run: terraform apply -auto-approve -var="access_key=${{ secrets.ACCESS_KEY }}" -var="secret_key=${{ secrets.SECRET_KEY }}" -var="cloud_id=${{ secrets.CLOUD_ID }}" -var="folder_id=${{ secrets.FOLDER_ID }}" -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
-          YC_SERVICE_ACCOUNT_KEY_FILE: key.json
       
       - name: Terraform Destroy
         if: ${{ github.event.inputs.action == 'destroy' }}
-        run: terraform destroy -auto-approve -var="cloud_id=${{ secrets.CLOUD_ID }}" -var="folder_id=${{ secrets.FOLDER_ID }}" -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" -var="yandex_service_account_key=${{ secrets.YC_SERVICE_ACCOUNT_KEY }}"
+        run: terraform destroy -auto-approve -var="access_key=${{ secrets.ACCESS_KEY }}" -var="secret_key=${{ secrets.SECRET_KEY }}" -var="cloud_id=${{ secrets.CLOUD_ID }}" -var="folder_id=${{ secrets.FOLDER_ID }}" -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
-          YC_SERVICE_ACCOUNT_KEY_FILE: key.json
-      
-      - name: Clean up
-        if: always()
-        run: rm -f key.json

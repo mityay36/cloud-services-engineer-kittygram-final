@@ -1,3 +1,15 @@
+variable "access_key" {
+  description = "Yandex Cloud access key"
+  type        = string
+  sensitive   = true
+}
+
+variable "secret_key" {
+  description = "Yandex Cloud secret key"
+  type        = string
+  sensitive   = true
+}
+
 variable "cloud_id" {
   description = "Yandex Cloud ID"
   type        = string
@@ -17,10 +29,4 @@ variable "zone" {
 variable "ssh_public_key" {
   description = "SSH public key for VM access"
   type        = string
-}
-
-variable "yandex_service_account_key" {
-  description = "Yandex Cloud service account key JSON"
-  type        = string
-  sensitive   = true
 }
