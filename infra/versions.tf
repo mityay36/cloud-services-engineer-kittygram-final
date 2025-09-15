@@ -6,20 +6,21 @@ terraform {
       source  = "yandex-cloud/yandex"
       version = ">= 0.61.0"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.1"
+    }
   }
 
   backend "s3" {
-    endpoints = {
-      s3 = "https://storage.yandexcloud.net"
-    }
-    bucket = "kittygram-tf-state-bucket"
-    region = "ru-central1"
-    key    = "tf-state.tfstate"
+    endpoint = "https://storage.yandexcloud.net"
+    bucket   = "kittygram-tf-state-bucket"
+    region   = "ru-central1"
+    key      = "tf-state.tfstate"
 
     skip_region_validation      = true
     skip_credentials_validation = true
-    skip_requesting_account_id  = true
-    skip_s3_checksum            = true
+    skip_metadata_api_check     = true
   }
 }
 
