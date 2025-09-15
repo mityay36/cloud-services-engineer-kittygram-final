@@ -10,6 +10,12 @@ variable "secret_key" {
   sensitive   = true
 }
 
+variable "yandex_token" {
+  description = "Yandex Cloud OAuth token"
+  type        = string
+  sensitive   = true
+}
+
 variable "cloud_id" {
   description = "Yandex Cloud ID"
   type        = string

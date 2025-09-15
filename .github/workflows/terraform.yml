@@ -37,21 +37,21 @@ jobs:
       
       - name: Terraform Plan
         if: ${{ github.event.inputs.action == 'plan' }}
-        run: terraform plan -var="access_key=${{ secrets.ACCESS_KEY }}" -var="secret_key=${{ secrets.SECRET_KEY }}" -var="cloud_id=${{ secrets.CLOUD_ID }}" -var="folder_id=${{ secrets.FOLDER_ID }}" -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
+        run: terraform plan -var="access_key=${{ secrets.ACCESS_KEY }}" -var="secret_key=${{ secrets.SECRET_KEY }}" -var="yandex_token=${{ secrets.YC_TOKEN }}" -var="cloud_id=${{ secrets.CLOUD_ID }}" -var="folder_id=${{ secrets.FOLDER_ID }}" -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
       
       - name: Terraform Apply
         if: ${{ github.event.inputs.action == 'apply' }}
-        run: terraform apply -auto-approve -var="access_key=${{ secrets.ACCESS_KEY }}" -var="secret_key=${{ secrets.SECRET_KEY }}" -var="cloud_id=${{ secrets.CLOUD_ID }}" -var="folder_id=${{ secrets.FOLDER_ID }}" -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
+        run: terraform apply -auto-approve -var="access_key=${{ secrets.ACCESS_KEY }}" -var="secret_key=${{ secrets.SECRET_KEY }}" -var="yandex_token=${{ secrets.YC_TOKEN }}" -var="cloud_id=${{ secrets.CLOUD_ID }}" -var="folder_id=${{ secrets.FOLDER_ID }}" -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
       
       - name: Terraform Destroy
         if: ${{ github.event.inputs.action == 'destroy' }}
-        run: terraform destroy -auto-approve -var="access_key=${{ secrets.ACCESS_KEY }}" -var="secret_key=${{ secrets.SECRET_KEY }}" -var="cloud_id=${{ secrets.CLOUD_ID }}" -var="folder_id=${{ secrets.FOLDER_ID }}" -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
+        run: terraform destroy -auto-approve -var="access_key=${{ secrets.ACCESS_KEY }}" -var="secret_key=${{ secrets.SECRET_KEY }}" -var="yandex_token=${{ secrets.YC_TOKEN }}" -var="cloud_id=${{ secrets.CLOUD_ID }}" -var="folder_id=${{ secrets.FOLDER_ID }}" -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
