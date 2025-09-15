@@ -133,6 +133,7 @@ jobs:
         host: ${{ steps.get_ip.outputs.vm_ip }}
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
+        passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
           cd kittygram
           sudo docker compose -f docker-compose.production.yml pull
