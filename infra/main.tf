@@ -1,4 +1,7 @@
-# Сеть
+data "yandex_compute_image" "ubuntu" {
+  family = "ubuntu-2204-lts"
+}
+
 resource "yandex_vpc_network" "kittygram_network" {
   name        = "kittygram-network"
   description = "Network for Kittygram application"
@@ -62,7 +65,7 @@ resource "yandex_compute_instance" "kittygram_vm" {
 
   boot_disk {
     initialize_params {
-      image_id = "fd0u5c5d5w0m2m7t7jld"
+      image_id = data.yandex_compute_image.ubuntu.id
       size     = 15
     }
   }

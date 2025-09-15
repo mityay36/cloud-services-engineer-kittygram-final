@@ -12,3 +12,13 @@ output "bucket_name" {
   description = "S3 bucket name"
   value       = yandex_storage_bucket.kittygram_static.bucket
 }
+
+output "image_id" {
+  description = "Ubuntu image ID used for VM"
+  value       = data.yandex_compute_image.ubuntu.id
+}
+
+output "image_family" {
+  description = "Image family"
+  value       = data.yandex_compute_image.ubuntu.family
+}
