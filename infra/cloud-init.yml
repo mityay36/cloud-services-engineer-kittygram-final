@@ -1,6 +1,7 @@
+#cloud-config
 users:
   - name: ubuntu
-    groups: sudo
+    groups: sudo, docker
     shell: /bin/bash
     sudo: ['ALL=(ALL) NOPASSWD:ALL']
 
@@ -12,13 +13,19 @@ packages:
   - git
   - htop
   - vim
+  - apt-transport-https
+  - ca-certificates
+  - gnupg
+  - lsb-release
 
 runcmd:
-  - curl -fsSL https://get.docker.com -o get-docker.sh
-  - sh get-docker.sh
-  - usermod -aG docker ubuntu
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+  - apt-get update -y
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
   - systemctl enable docker
   - systemctl start docker
+  - usermod -aG docker ubuntu
   
   - curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   - chmod +x /usr/local/bin/docker-compose
@@ -26,7 +33,7 @@ runcmd:
   
   - mkdir -p /home/ubuntu/kittygram
   - chown ubuntu:ubuntu /home/ubuntu/kittygram
-  
+
 write_files:
   - path: /etc/systemd/system/docker.service.d/override.conf
     content: |
