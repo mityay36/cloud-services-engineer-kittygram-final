@@ -76,7 +76,7 @@ resource "yandex_compute_instance" "kittygram_vm" {
     security_group_ids = [yandex_vpc_security_group.kittygram_sg.id]
   }
 
-  metadata = {
+  metadata {
     ssh-keys  = "ubuntu:${var.ssh_public_key}"
     user-data = file("${path.module}/cloud-init.yml")
   }
