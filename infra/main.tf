@@ -78,7 +78,9 @@ resource "yandex_compute_instance" "kittygram_vm" {
 
   metadata = {
     ssh-keys  = "ubuntu:${var.ssh_public_key}"
-    user-data = file("${path.module}/cloud-init.yml")
+    user-data = templatefile("${path.module}/cloud-init.yml", {
+      ssh_public_key = var.ssh_public_key
+    })
   }
 
   scheduling_policy {
