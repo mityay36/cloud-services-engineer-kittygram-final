@@ -46,6 +46,8 @@ services:
       - 80:80
     networks:
       - "kittygram_network"
+    depends_on:
+      - backend
     volumes:
       - media:/var/www/media
       - static:/usr/share/nginx/html/backend
