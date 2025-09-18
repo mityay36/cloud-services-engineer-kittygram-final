@@ -17,7 +17,7 @@ write_files:
 
       # Docker
       echo "Installing Docker"
-      sudo apt update -y && sudo apt install docker.io -y
+      sudo apt update -y && sudo apt install docker.io docker-compose -y
       echo "Grant user access to Docker"
       sudo usermod -aG docker ubuntu
       newgrp docker
