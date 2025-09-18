@@ -19,7 +19,7 @@ write_files:
       echo "Installing Docker"
       sudo apt update -y && sudo apt install docker.io -y
       echo "Grant user access to Docker"
-      sudo usermod -aG docker ${USER}
+      sudo usermod -aG docker ubuntu
       newgrp docker
 
     defer: true
