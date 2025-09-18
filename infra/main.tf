@@ -36,7 +36,7 @@ resource "yandex_vpc_security_group" "kittygram_sg" {
     protocol       = "TCP"
     description    = "HTTP Gateway"
     v4_cidr_blocks = ["0.0.0.0/0"]
-    port           = 9000
+    port           = 80
   }
 }
 
