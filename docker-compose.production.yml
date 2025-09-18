@@ -6,28 +6,51 @@ volumes:
   media:
 
 services:
+
   db:
     image: postgres:13.10
     env_file: .env
     volumes:
       - pg_data:/var/lib/postgresql/data
+    networks:
+      - "kittygram_network"
+
   backend:
     image: mityay36/kittygram_backend
     env_file: .env
     volumes:
       - static:/backend_static
       - media:/media
+    networks:
+      - "kittygram_network"
+    depends_on:
+      - db
+    restart: always
+
   frontend:
     env_file: .env
     image: mityay36/kittygram_frontend
     command: cp -r /app/build/. /static/
     volumes:
-      - static:/static
+    - static_frontend:/app/build
+    networks:
+      - "kittygram_network"
+    depends_on:
+      - backend
+    restart: always
+
   gateway:
     image: mityay36/kittygram_gateway
     env_file: .env
     ports:
-      - 9000:80
+      - 80:80
+    networks:
+      - "kittygram_network"
     volumes:
-      - static:/static
-      - media:/media
+      - media:/var/www/media
+      - static:/usr/share/nginx/html/backend
+      - static_frontend:/usr/share/nginx/html/frontend
+
+networks:
+  kittygram_network:
+    driver: "bridge"
